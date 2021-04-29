@@ -1,10 +1,12 @@
 ---
 title: JS异步
+categories:
+  - JavaScript
+tags:
+  - 花满楼
+toc: false
 date: 2019-12-06 01:10:26
-categories: JavaScript
-tags: 花满楼
 ---
-
 
 **前言**  什么是异步？异步和同步又有什么区别？
 
@@ -186,9 +188,39 @@ setTimeout(() => {
 最终打印输出的顺序为1，9，5，0，6，2，7，4，8，3
 
 
+
+<font color='#ccc'>2020.0519补充</font>
+
+### 如何分析异步执行的顺序
+- 首先我们分析有多少个宏任务
+- 在每个宏任务中，分析有多少个微任务
+- 根据调用次序，确定宏任务中的微任务执行次序
+- 根据宏任务的触发规则和调用次序，确定宏任务的执行次序
+- 确定整个顺序。
+
+### 新特性 async/await
+
+async 函数是一种特殊语法，特征是在 function 关键字之前加上 async 关键字，这样，就定义了一个 async 函数，我们可以在其中使用 await 来等待一个 Promise。async 函数必定返回 Promise。
+
+```
+
+function sleep(duration) {
+    return new Promise(function(resolve, reject) {
+        setTimeout(resolve,duration);
+    })
+}
+async function foo(name){
+    await sleep(2000)
+    console.log(name)
+}
+async function foo2(){
+    await foo("a");
+    await foo("b");
+}
+```
+
+
+
+
 ### 小结
 异步还是同步执行代码，取决于我们要做什么。
-
-
-
-

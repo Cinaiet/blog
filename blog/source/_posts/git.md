@@ -1,10 +1,33 @@
 ---
 title: git常用命令
+categories:
+  - 千百度
+tags:
+  - 花满楼
+toc: false
 date: 2018-12-06 14:42:55
-categories: 千百度
-tags: 花满楼
 ---
 
+#### 本地配置多个sshkey
+
+<!-- more -->
+
+```
+//  生成一个私人使用的sshkey
+$ ssh-keygen -t rsa -C "email@privite.com" -f ~/.ssh/id_rsa 
+
+// 生成一个公司使用的sshkey
+$ ssh-keygen -t rsa -C "2email@github.com" -f ~/.ssh/company_rsa 
+
+
+or 
+
+$ ssh-keygen -t rsa -C "email@privite.com"
+// 第一次生成是一路回车生成默认的 id_rsa
+$ cd ~/.ssh
+$ ssh-keygen -t rsa -C‘youremail@company.com’ 继续生成第二个sshkey
+// 回车之后输入sshkey的名字，之后一路回车就行。
+```
 #### 从远端服务器拉取分支到本地
 ```
 $ git checkout -b <branchName> origin/<branchName>
@@ -13,7 +36,7 @@ $ git checkout -b <branchName> origin/<branchName>
 ```
 $ git branch -D <branchName>
 ```
-<!-- more -->
+
 
 #### 删除远端分支
 ```
@@ -79,4 +102,19 @@ $ git log // 查看提交记录
 $ git checkout master // 切换到功能分支
 $ git cherry-pick xxx // xxx 为某一次的提交记录的commit-id
 ```
+*20210118补充*
+#### cherry-pick
+
+##### 将一个分支上的所有提交内容，转移到新的任务分支上。
+```
+// A~B 为连续的几次提交内容
+$ git cherry-pick A^..B 
+```
+
+#### 根据commit id 回滚指定的提交
+
+```
+$ git revert xxx -m  1  
+```
+
 #### 以上
