@@ -2,7 +2,9 @@
 title: Hooks的使用及思考
 date: 2022-11-03 17:00:54
 categories: JavaScript
-tags: 花满楼
+tags:
+  - 花满楼
+  - 重学React
 ---
 
 ## 为什么要用 Hooks
@@ -413,3 +415,103 @@ function ThemedButton() {
 - 只能在函数组件的顶级作用域中使用；只能在函数组件或其他 Hooks 中使用。
   顶级作用域，就是**Hooks 不能用在循环、条件判断或者嵌套函数内执行，必须是顶层。**同时 **Hooks 在组件的多次渲染之间，必须按顺序被执行。**
 - 避免重复定义回调函数
+
+---
+
+_`20221111补充：`_
+
+### 保持状态的一致性
+
+在 Hooks 的使用过程中我们应当尽可能使用最优、最合理的方式去管理应用状态。
+
+#### 保证状态最小化
+
+不要把 State 当做变量用。**在保证 State 完整性的同时，也应保证它的最小化。**
+
+举个栗子。我们要实现一个对订单列表进行关键字搜索的功能。我们可能需要一个搜索框和一个订单列表。
+
+按照 React 状态驱动 UI 的思想，我们页面上可能需要三个状态：
+
+1. 订单列表的数据：可能来自于某个接口请求；
+2. 搜索关键字： 用户输入；
+3. 搜索结果： 根据搜索关键字过滤原始数据。
+
+故代码实现如下：
+
+```
+const OrderListFilter = function (data) {
+  // 搜索关键字
+  const [filterVal, setFilterVal] = useState('');
+
+  // 过滤后展示的数据，默认为原始数据
+  const [filterList, setFilterList] = useState(data);
+
+  const handleFilter = useCallback(
+    (evt) => {
+      const temp = evt.target.value;
+      setFilterVal(temp);
+      setFilterList(
+        filterList.filter((item) => {
+          return item.title.includes(temp);
+        }),
+      );
+    },
+    [filterVal],
+  );
+
+  return (
+    <div>
+      <input type="text" value={filterVal} onChange={handleFilter} />
+      {filterList.length
+        ? filterList.map((item) => {
+            return <div>item.title</div>;
+          })
+        : null}
+    </div>
+  );
+};
+```
+
+在上述代码中，使用了两个 state 去保存过滤后的结果。但其实这个 state 是多余的。因为**过滤后的结果数据可以使用计算属性 useMemo 缓存起来。**
+
+```
+const OrderListFilter = function (data) {
+  // 搜索关键字
+  const [filterVal, setFilterVal] = useState('');
+
+  const filterList = useMemo(() => {
+    return data.filter(item => {
+      return item.title.includes(filterVal)
+    })
+  })
+
+  const handleFilter = useCallback(
+    (evt) => {
+      const temp = evt.target.value;
+      setFilterVal(temp);
+      setFilterList(
+        filterList.filter((item) => {
+          return item.title.includes(temp);
+        }),
+      );
+    },
+    [filterVal, data],
+  );
+
+  return (
+    <div>
+      <input type="text" value={filterVal} onChange={handleFilter} />
+      {filterList.length
+        ? filterList.map((item) => {
+            return <div>item.title</div>;
+          })
+        : null}
+    </div>
+  );
+};
+```
+
+这样就可以只使用一个 state 来使得组件最简化。
+所以我们在定义一个新的状态之前，都要再三拷问自己：**这个状态是必须的吗？是否能通过计算得到？**
+
+#### 避免中间状态，保持数据源唯一
