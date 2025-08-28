@@ -9,14 +9,16 @@ date: 2021-01-17 17:09:00
 ---
 
 webpack loader 和插件编写。
+
 <!--more-->
 
 ## Loader
-loader本身是一个函数，接受源文件作为参数，返回转换的结果。
+
+loader 本身是一个函数，接受源文件作为参数，返回转换的结果。
 
 ### 执行顺序
-loader的执行顺序为从右向左。
 
+loader 的执行顺序为从右向左。
 
 ```
 
@@ -24,18 +26,21 @@ loader的执行顺序为从右向左。
 compose = (f, g) => (...args) => f(g(...args))
 
 ```
+
 ### loader-runner
-**定义：** 允许在不安装webpack-cli 的前提下运行loader
 
-**作用：** 
+**定义：** 允许在不安装 webpack-cli 的前提下运行 loader
+
+**作用：**
+
 1.  提供独立的运行环境
-2.  作为webpack的依赖，在webpack中使用它执行loader；
-3.  进行loader的开发和调试。
-4. [github地址](https://github.com/webpack/loader-runner)
+2.  作为 webpack 的依赖，在 webpack 中使用它执行 loader；
+3.  进行 loader 的开发和调试。
+4.  [github 地址](https://github.com/webpack/loader-runner)
 
-#### 编写一个调试实例（处理es6安全性问题）
+#### 编写一个调试实例（处理 es6 安全性问题）
 
-*编码为2028的字符为行分隔符，会被浏览器理解为换行，而在Javascript的字符串表达式中是不允许换行的，从而导致错误。2029为段分隔号，同2028*
+_编码为 2028 的字符为行分隔符，会被浏览器理解为换行，而在 Javascript 的字符串表达式中是不允许换行的，从而导致错误。2029 为段分隔号，同 2028_
 
 - 目录结构
 
@@ -50,13 +55,12 @@ $ npm i loader-runner -S
 
 ```
 
-- src/demo.js
-
-
+- src/demo.txt
 
 ```
 asd
 ```
+
 - src/raw-loader.js
 
 ```
@@ -104,5 +108,6 @@ runLoaders({
   missingDependencies: [] }
 ```
 
-### 编写一个构建资源为zip包的插件
+### 编写一个构建资源为 zip 包的插件
+
 [代码仓库地址](https://github.com/Cinaiet/zip-loader)
